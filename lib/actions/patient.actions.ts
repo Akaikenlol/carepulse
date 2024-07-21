@@ -1,3 +1,5 @@
+"use server";
+
 import { ID, Query } from "node-appwrite";
 import { users } from "../appwrite.config";
 import { parseStringify } from "../utils";
@@ -22,6 +24,14 @@ export const createUser = async (user: CreateUserParams) => {
 
 			return existingUser.users[0];
 		}
-		console.error("An error occurred while creating a new user:", error);
+		throw new Error("Error creating an user", error.message);
+	}
+};
+
+export const getUser = async (userId: string) => {
+	try {
+		const user = await users.get(userId);
+	} catch (error) {
+		console.log(error);
 	}
 };

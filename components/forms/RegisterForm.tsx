@@ -23,9 +23,9 @@ import { PatientFormValidation } from "@/lib/validation";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-phone-number-input/style.css";
 import CustomFormField from "../CustomFormField";
-import { FormFieldType } from "./PatientForm";
 import FileUploader from "../FileUploader";
 import SubmitButton from "../SubmitButton";
+import { FormFieldType } from "./PatientForm";
 
 const RegisterForm = ({ user }: { user: User }) => {
 	const router = useRouter();
@@ -35,9 +35,9 @@ const RegisterForm = ({ user }: { user: User }) => {
 		resolver: zodResolver(PatientFormValidation),
 		defaultValues: {
 			...PatientFormDefaultValues,
-			name: "",
-			email: "",
-			phone: "",
+			name: user.name,
+			email: user.email,
+			phone: user.phone,
 		},
 	});
 
@@ -59,21 +59,40 @@ const RegisterForm = ({ user }: { user: User }) => {
 		}
 
 		try {
-			const patientData = {
-				...values,
+			const patient = {
 				userId: user.$id,
+				name: values.name,
+				email: values.email,
+				phone: values.phone,
 				birthDate: new Date(values.birthDate),
-				IdentificationDocument: formData,
+				gender: values.gender,
+				address: values.address,
+				occupation: values.occupation,
+				emergencyContactName: values.emergencyContactName,
+				emergencyContactNumber: values.emergencyContactNumber,
+				primaryPhysician: values.primaryPhysician,
+				insuranceProvider: values.insuranceProvider,
+				insurancePolicyNumber: values.insurancePolicyNumber,
+				allergies: values.allergies,
+				currentMedication: values.currentMedication,
+				familyMedicalHistory: values.familyMedicalHistory,
+				pastMedicalHistory: values.pastMedicalHistory,
+				identificationType: values.identificationType,
+				identificationNumber: values.identificationNumber,
+				identificationDocument: values.identificationDocument
+					? formData
+					: undefined,
+				privacyConsent: values.privacyConsent,
 			};
 
-			// @ts-ignore
-			const patient = await registerPatient(patientData);
+			const newPatient = await registerPatient(patient);
+			console.log({ newPatient });
 
-			if (patient) {
+			if (newPatient) {
 				router.push(`/patients/${user.$id}/new-appointment`);
 			}
-		} catch (error: any) {
-			console.log(error.message);
+		} catch (error) {
+			console.log(error);
 		}
 
 		setIsLoading(false);

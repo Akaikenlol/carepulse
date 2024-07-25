@@ -58,7 +58,6 @@ export const getUser = async (userId: string) => {
 // REGISTER PATIENT
 export const registerPatient = async ({
 	identificationDocument,
-	userId,
 	...patient
 }: RegisterUserParams) => {
 	try {
@@ -82,14 +81,12 @@ export const registerPatient = async ({
 			PATIENT_COLLECTION_ID!,
 			ID.unique(),
 			{
-				userId,
 				identificationDocumentId: file?.$id ? file.$id : null,
 				identificationDocumentUrl: file?.$id
 					? `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${file.$id}/view??project=${PROJECT_ID}`
 					: null,
 				...patient,
-			},
-			["*"]
+			}
 		);
 
 		console.log({ newPatient });
@@ -113,10 +110,10 @@ export const getPatient = async (userId: string) => {
 		);
 
 		return parseStringify(patients.documents[0]);
-	} catch (error) {
+	} catch (error: any) {
 		console.error(
 			"An error occurred while retrieving the patient details:",
-			error
+			error.message
 		);
 	}
 };

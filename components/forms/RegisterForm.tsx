@@ -35,9 +35,9 @@ const RegisterForm = ({ user }: { user: User }) => {
 		resolver: zodResolver(PatientFormValidation),
 		defaultValues: {
 			...PatientFormDefaultValues,
-			name: user.name,
-			email: user.email,
-			phone: user.phone,
+			name: "",
+			email: "",
+			phone: "",
 		},
 	});
 
@@ -91,8 +91,8 @@ const RegisterForm = ({ user }: { user: User }) => {
 			if (newPatient) {
 				router.push(`/patients/${user.$id}/new-appointment`);
 			}
-		} catch (error) {
-			console.log(error);
+		} catch (error: any) {
+			console.log(error.message);
 		}
 
 		setIsLoading(false);

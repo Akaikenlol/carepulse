@@ -15,12 +15,12 @@ import {
 	FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
-import { FormFieldType } from "./forms/PatientForm";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "./ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { FormFieldType } from "@/constants";
 interface CustomProps {
 	control: Control<any>;
 	fieldType: FormFieldType;

@@ -1,26 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import { Form } from "../ui/form";
+import { z } from "zod";
+
+import { Form } from "@/components/ui/form";
+import { createUser } from "@/lib/actions/patient.actions";
+import { UserFormValidation } from "@/lib/validation";
+
+import "react-phone-number-input/style.css";
 import CustomFormField from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
-import { UserFormValidation } from "@/lib/validation";
-import { useRouter } from "next/navigation";
-import { createUser } from "@/lib/actions/patient.actions";
-
-export enum FormFieldType {
-	INPUT = "input",
-	TEXTAREA = "textarea",
-	PHONE_INPUT = "phoneInput",
-	CHECKBOX = "checkbox",
-	DATE_PICKER = "datePicker",
-	SELECT = "select",
-	SKELETON = "skeleton",
-}
+import { FormFieldType } from "@/constants";
 
 const PatientForm = () => {
 	const router = useRouter();
@@ -35,24 +28,28 @@ const PatientForm = () => {
 		},
 	});
 
-	async function onSubmit({
-		name,
-		email,
-		phone,
-	}: z.infer<typeof UserFormValidation>) {
+	const onSubmit = async (values: z.infer<typeof UserFormValidation>) => {
+		console.log("Before UserFormValidation : ", { UserFormValidation });
 		setIsLoading(true);
 
 		try {
-			const userData = { name, email, phone };
+			const user = {
+				name: values.name,
+				email: values.email,
+				phone: values.phone,
+			};
 
-			const user = await createUser(userData);
+			const newUser = await createUser(user);
 
-			if (user) router.push(`/patients/${user.$id}/register`);
+			if (newUser) {
+				router.push(`/patients/${newUser.$id}/register`);
+			}
 		} catch (error) {
 			console.log(error);
 		}
+
 		setIsLoading(false);
-	}
+	};
 
 	return (
 		<Form {...form}>

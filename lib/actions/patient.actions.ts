@@ -47,10 +47,10 @@ export const getUser = async (userId: string) => {
 		const user = await users.get(userId);
 
 		return parseStringify(user);
-	} catch (error) {
+	} catch (error: any) {
 		console.error(
 			"An error occurred while retrieving the user details:",
-			error
+			error.message
 		);
 	}
 };
@@ -73,7 +73,6 @@ export const registerPatient = async ({
 
 			file = await storage.createFile(BUCKET_ID!, ID.unique(), inputFile);
 		}
-		console.log(file);
 
 		// Create new patient document -> https://appwrite.io/docs/references/cloud/server-nodejs/databases#createDocument
 		const newPatient = await databases.createDocument(

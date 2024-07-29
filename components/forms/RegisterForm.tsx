@@ -13,6 +13,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { SelectItem } from "@/components/ui/select";
 import {
 	Doctors,
+	FormFieldType,
 	GenderOptions,
 	IdentificationTypes,
 	PatientFormDefaultValues,
@@ -23,9 +24,9 @@ import { PatientFormValidation } from "@/lib/validation";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-phone-number-input/style.css";
 import CustomFormField from "../CustomFormField";
-import FileUploader from "../FileUploader";
 import SubmitButton from "../SubmitButton";
-import { FormFieldType } from "./PatientForm";
+
+import FileUploader from "../FileUploader";
 
 const RegisterForm = ({ user }: { user: User }) => {
 	const router = useRouter();
@@ -35,15 +36,17 @@ const RegisterForm = ({ user }: { user: User }) => {
 		resolver: zodResolver(PatientFormValidation),
 		defaultValues: {
 			...PatientFormDefaultValues,
-			name: "",
-			email: "",
-			phone: "",
+			name: user.name,
+			email: user.email,
+			phone: user.phone,
 		},
 	});
 
 	const onSubmit = async (values: z.infer<typeof PatientFormValidation>) => {
+		console.log("Before PatientFormValidation: ", { PatientFormValidation });
 		setIsLoading(true);
 
+		// Store file info in form data as
 		let formData;
 		if (
 			values.identificationDocument &&
@@ -86,7 +89,6 @@ const RegisterForm = ({ user }: { user: User }) => {
 			};
 
 			const newPatient = await registerPatient(patient);
-			console.log({ newPatient });
 
 			if (newPatient) {
 				router.push(`/patients/${user.$id}/new-appointment`);
